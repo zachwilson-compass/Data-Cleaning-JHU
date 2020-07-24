@@ -24,7 +24,7 @@ load_dataset <- function(path, name) {
     return(out)
   }
   
-  # Headers
+  # Headers  & Activity Labels
   headers <- read.csv('UCI HAR Dataset/features.txt', sep = ' ', header = FALSE)$V2
   activity <- read.csv('UCI HAR Dataset/activity_labels.txt', sep = ' ', header = FALSE)
   colnames(activity) <- c('label', 'label_text')
@@ -64,11 +64,14 @@ dat_raw <- dat_test %>% bind_rows(dat_train)
 # Data with just means & standard deviations
 dat_mean_and_std <- dat_raw %>% select(Subject, label_text, contains('mean()'), contains('std()')) %>% 
   arrange(Subject, label_text)
-# Displays top 5 results
+# Displays top 5 observations
 head(dat_mean_and_std, 5)
 
+# Summarizes (by averageing) each numeric varaible by the Subject
+# and the activity
 dat_means_and_std_summary <- dat_mean_and_std %>% 
   group_by(Subject, label_text) %>% 
   summarise_if(is.numeric, mean, na.rm = TRUE) %>% 
   arrange(Subject, label_text)
+# Displays top 5 observations
 head(dat_means_and_std_summary)
